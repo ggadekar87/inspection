@@ -89,7 +89,27 @@ export async function fetchAppointmentsMock({
   return { data, total };
 }
 
-export async function createAppointment(payload: Partial<Appointment>): Promise<Appointment> {
+export async function createAppointment(
+  payload: Partial<Appointment>
+): Promise<Appointment> {
+  await delay(300); // keep your artificial delay if needed
+debugger;
+
+  const response = await axiosapi.post<Appointment>(
+    "TruckAppointment/create",
+    {
+      truckNumber: payload.truckNumber || "UNKNOWN",
+      driverName: payload.driverName || "UNKNOWN",
+      appointmentDate: payload.appointmentDate || new Date().toISOString(),
+      purpose: payload.purpose || "Delivery",
+      portOfEntry: payload.portOfEntry || "Port A",
+      comments: payload.comments || ""
+    }
+  );
+debugger;
+  return response.data;
+}
+export async function createAppointmentMock(payload: Partial<Appointment>): Promise<Appointment> {
   await delay(300);
   const newItem: Appointment = {
     id: String(DB.length + 1),
