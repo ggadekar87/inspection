@@ -19,13 +19,16 @@ export default function AppointmentList() {
   const debouncedSearch = useDebounce(searchCols, 400);
 
   useEffect(() => {
-    dispatch(fetchAppointments( ));
+    dispatch(fetchAppointments({ page, pageSize, search: debouncedSearch }));
   }, [dispatch, page, pageSize, debouncedSearch]);
 
   const columns = useMemo(() => {
     return ['Truck Number', 'Driver Name', 'Appointment', 'Purpose', 'Port of Entry', 'Status', 'Action'];
   }, []);
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: number, field: string) => {
+    setSearchCols((s) => ({ ...s, [field]: e.target.value }))
+    setPage(1);
+  }
   return (
     <div className="card">
       <h3>Appointments</h3>
@@ -42,14 +45,14 @@ export default function AppointmentList() {
                 <input
                   placeholder="Search truck"
                   value={searchCols.truckNumber}
-                  onChange={(e) => setSearchCols((s) => ({ ...s, truckNumber: e.target.value }))}
+                  onChange={(e) => handleChange(e, 0, 'truckNumber')}
                 />
               </th>
               <th>
                 <input
                   placeholder="Search driver"
                   value={searchCols.driverName}
-                  onChange={(e) => setSearchCols((s) => ({ ...s, driverName: e.target.value }))}
+                  onChange={(e) => handleChange(e, 1, 'driverName')}
                 />
               </th>
               <th />

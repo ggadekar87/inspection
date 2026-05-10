@@ -7,8 +7,8 @@ export type Appointment = api.Appointment;
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetch',
-  async () => {
-    const res = await api.fetchAppointments();
+  async (params: Parameters<typeof api.fetchAppointments>[0]) => {
+    const res = await api.fetchAppointments(params);
     return res;
   }
 );

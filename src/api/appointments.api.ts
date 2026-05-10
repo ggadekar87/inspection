@@ -34,10 +34,32 @@ function delay(ms = 300) {
   return new Promise((res) => setTimeout(res, ms));
 }
  
-export async function fetchAppointments( ): Promise<{ data: Appointment[]; total: number }> {
+export async function fetchAppointments({
+  page,
+  pageSize,
+  search,
+}: {
+  page: number;
+  pageSize: number;
+  search?: Record<string, string>;
+} ): Promise<{ data: Appointment[]; total: number }> {
   await delay(350);
-  const response = await axiosapi.get("/TruckAppointment/fetch");
-  return { data: response.data, total: response.data.length };
+ // const response = await axiosapi.get("/TruckAppointment/fetch");
+  try {
+    const response = await axiosapi.get("/TruckAppointment/fetch", {
+      params: {
+        page,
+        pageSize,
+        ...search,
+      },
+    });
+    return { data: response.data.data, total: response.data.total };
+
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    throw error;
+  }
+
 }
 
 export async function fetchAppointmentsMock({
