@@ -1,5 +1,5 @@
 // src/features/appointments/components/AppointmentRow.tsx
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import type { Appointment } from '../../appointments/appointmentsSlice';
 
 export default function AppointmentRow({
@@ -34,7 +34,7 @@ export default function AppointmentRow({
     onUpdate({ status: 'Rejected', comments: comment });
     handleAdminClose();
   };
-
+ 
   return (
     <>
       <tr>

@@ -10,7 +10,7 @@ export interface Appointment {
   appointmentDate: string;
   purpose: string;
   portOfEntry: string;
-  status: AppointmentStatus;
+  status: string;
   comments?: string;
 }
 
@@ -106,7 +106,6 @@ debugger;
       comments: payload.comments || ""
     }
   );
-debugger;
   return response.data;
 }
 export async function createAppointmentMock(payload: Partial<Appointment>): Promise<Appointment> {

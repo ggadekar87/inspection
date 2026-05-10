@@ -40,7 +40,7 @@ const initialState: State = {
   error: null,
 };
 
-const slice = createSlice({
+const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState,
   reducers: {},
@@ -88,4 +88,4 @@ const slice = createSlice({
   },
 });
 
-export default slice.reducer;
+export default appointmentsSlice.reducer;
