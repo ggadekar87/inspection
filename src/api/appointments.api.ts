@@ -92,22 +92,28 @@ export async function fetchAppointmentsMock({
 export async function createAppointment(
   payload: Partial<Appointment>
 ): Promise<Appointment> {
-  await delay(300); // keep your artificial delay if needed
-debugger;
+  await delay(300); // optional artificial delay
 
-  const response = await axiosapi.post<Appointment>(
-    "TruckAppointment/create",
-    {
-      truckNumber: payload.truckNumber || "UNKNOWN",
-      driverName: payload.driverName || "UNKNOWN",
-      appointmentDate: payload.appointmentDate || new Date().toISOString(),
-      purpose: payload.purpose || "Delivery",
-      portOfEntry: payload.portOfEntry || "Port A",
-      comments: payload.comments || ""
-    }
-  );
-  return response.data;
+  try {
+    const response = await axiosapi.post<Appointment>(
+      "/TruckAppointment/create",
+      {
+        truckNumber: payload.truckNumber ?? "UNKNOWN",
+        driverName: payload.driverName ?? "UNKNOWN",
+        appointmentDate: payload.appointmentDate ?? new Date().toISOString(),
+        purpose: payload.purpose ?? "Delivery",
+        portOfEntry: payload.portOfEntry ?? "Port A",
+        comments: payload.comments ?? ""
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error creating appointment:", error);
+    throw error;
+  }
 }
+
 export async function createAppointmentMock(payload: Partial<Appointment>): Promise<Appointment> {
   await delay(300);
   const newItem: Appointment = {
@@ -124,10 +130,31 @@ export async function createAppointmentMock(payload: Partial<Appointment>): Prom
   return newItem;
 }
 
-export async function updateAppointment(id: string, patch: Partial<Appointment>): Promise<Appointment> {
+export async function updateAppointmentMock(id: string, patch: Partial<Appointment>): Promise<Appointment> {
   await delay(300);
   const idx = DB.findIndex((d) => d.id === id);
   if (idx === -1) throw new Error('Appointment not found');
   DB[idx] = { ...DB[idx], ...patch };
   return DB[idx];
+}
+
+
+export async function updateAppointment(
+  id: string,
+  patch: Partial<Appointment>
+): Promise<Appointment> {
+  await delay(300); // optional artificial delay
+  patch.id = id; // Ensure the ID is included in the patch for the API
+  try {
+    debugger;
+    const response = await axiosapi.put<Appointment>(
+      `/TruckAppointment/update`,
+      patch
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    throw error;
+  }
 }

@@ -77,9 +77,16 @@ const appointmentsSlice = createSlice({
       s.loading = true;
       s.error = null;
     });
-    builder.addCase(updateAppointment.fulfilled, (s, a: PayloadAction<Appointment>) => {
-      s.loading = false;
-      s.items = s.items.map((it) => (it.id === a.payload.id ? a.payload : it));
+    builder.addCase(updateAppointment.fulfilled, (state, action: PayloadAction<Appointment>) => {
+      state.loading = false;
+      debugger;
+      //s.items = s.items.map((it) => (it.id === a.payload.id ? a.payload : it));
+      const updated = action.payload;
+      const index = state.items.findIndex((a) => a.id === updated.id);
+
+      if (index !== -1) {
+        state.items[index] = updated; // 🔥 THIS FIXES LIST NOT REFRESHING
+      }
     });
     builder.addCase(updateAppointment.rejected, (s, a) => {
       s.loading = false;

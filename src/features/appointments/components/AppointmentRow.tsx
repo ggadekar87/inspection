@@ -1,5 +1,4 @@
-// src/features/appointments/components/AppointmentRow.tsx
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import type { Appointment } from '../../appointments/appointmentsSlice';
 
 export default function AppointmentRow({
@@ -11,82 +10,156 @@ export default function AppointmentRow({
   role: 'Driver' | 'Admin' | null;
   onUpdate: (patch: Partial<Appointment>) => void;
 }) {
-  const [showAdminModal, setShowAdminModal] = useState(false);
-  const [comment, setComment] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({ ...appointment });
+
+  const isCancelled = appointment.status === 'Cancelled';
 
   const handleModify = () => {
-    // For driver modify we could open a small inline edit; here we just toggle status to Pending
-    onUpdate({ ...appointment, comments: (appointment.comments || '') + ' | Modified by driver' });
+    setIsEditing(true);
   };
 
   const handleCancel = () => {
     onUpdate({ status: 'Cancelled' });
   };
 
-  const handleAdminOpen = () => setShowAdminModal(true);
-  const handleAdminClose = () => setShowAdminModal(false);
+  const handleSave = () => {
+    const patch: Partial<Appointment> = {
+      truckNumber: editData.truckNumber,
+      driverName: editData.driverName,
+      appointmentDate: editData.appointmentDate,
+      purpose: editData.purpose,
+      portOfEntry: editData.portOfEntry,
+      status: editData.status,
+      comments: editData.comments
+    };
+    onUpdate(patch);
+    setIsEditing(false);
+  };
 
-  const handleApprove = () => {
-    onUpdate({ status: 'Approved', comments: comment });
-    handleAdminClose();
+  const handleChange = (field: string, value: any) => {
+    setEditData((prev) => ({ ...prev, [field]: value }));
   };
-  const handleReject = () => {
-    onUpdate({ status: 'Rejected', comments: comment });
-    handleAdminClose();
-  };
- 
+
   return (
     <>
-      <tr>
-        <td>{appointment.truckNumber}</td>
-        <td>{appointment.driverName}</td>
-        <td>{new Date(appointment.appointmentDate).toLocaleString()}</td>
-        <td>{appointment.purpose}</td>
-        <td>{appointment.portOfEntry}</td>
-        <td>{appointment.status}</td>
+      <tr className={isCancelled ? "row-disabled" : ""}>
+        {/* Truck Number */}
         <td>
-          {role === 'Driver' && (
-            <>
-              <button className="btn small" onClick={handleModify}>
-                Modify
-              </button>
-              <button className="btn small danger" onClick={handleCancel}>
-                Cancel
-              </button>
-            </>
+          {isEditing ? (
+            <input
+              value={editData.truckNumber}
+              onChange={(e) => handleChange("truckNumber", e.target.value)}
+            />
+          ) : (
+            appointment.truckNumber
           )}
-          {role === 'Admin' && (
+        </td>
+
+        {/* Driver Name */}
+        <td>
+          {isEditing ? (
+            <input
+              value={editData.driverName}
+              onChange={(e) => handleChange("driverName", e.target.value)}
+            />
+          ) : (
+            appointment.driverName
+          )}
+        </td>
+
+        {/* Appointment Date */}
+        <td>
+          {isEditing ? (
+            <input
+              type="datetime-local"
+              value={editData.appointmentDate}
+              onChange={(e) => handleChange("appointmentDate", e.target.value)}
+            />
+          ) : (
+            new Date(appointment.appointmentDate).toLocaleString()
+          )}
+        </td>
+
+        {/* Purpose */}
+        <td>
+          {isEditing ? (
+            <select
+              value={editData.purpose}
+              onChange={(e) => handleChange("purpose", e.target.value)}
+            >
+              <option value="Delivery">Delivery</option>
+              <option value="Pickup">Pickup</option>
+              <option value="Inspection">Inspection</option>
+            </select>
+          ) : (
+            appointment.purpose
+          )}
+        </td>
+
+        {/* Port of Entry */}
+        <td>
+          {isEditing ? (
+            <select
+              value={editData.portOfEntry}
+              onChange={(e) => handleChange("portOfEntry", e.target.value)}
+            >
+              <option value="Abu Dhabi Port">Abu Dhabi Port</option>
+              <option value="Dubai Port">Dubai Port</option>
+              <option value="Sharjah Port">Sharjah Port</option>
+            </select>
+          ) : (
+            appointment.portOfEntry
+          )}
+        </td>
+
+        {/* Status */}
+        <td>
+          {isEditing ? (
+            <select
+              value={editData.status}
+              onChange={(e) => handleChange("status", e.target.value)}
+            >
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          ) : (
+            appointment.status
+          )}
+        </td>
+          <td>{ appointment.comments}</td>
+        {/* Action Buttons */}
+        <td>
+          {isCancelled ? (
+            <span className="badge cancelled">Cancelled</span>
+          ) : (
             <>
-              <button className="btn small" onClick={handleAdminOpen}>
-                Edit
-              </button>
+              {!isEditing && (
+                <>
+                  <button className="btn modify" onClick={handleModify}>
+                    Modify
+                  </button>
+                  {/* <button className="btn cancel" onClick={handleCancel}>
+                    Cancel
+                  </button> */}
+                </>
+              )}
+
+              {isEditing && (
+                <>
+                  <button className="btn save" onClick={handleSave}>
+                    Save
+                  </button>
+                  <button className="btn secondary" onClick={() => setIsEditing(false)}>
+                    Close
+                  </button>
+                </>
+              )}
             </>
           )}
         </td>
       </tr>
-
-      {showAdminModal && (
-        <div className="modal-backdrop">
-          <div className="modal card">
-            <h4>Admin Review</h4>
-            <p>
-              <strong>{appointment.truckNumber}</strong> — {appointment.driverName}
-            </p>
-            <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add comment" />
-            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-              <button className="btn primary" onClick={handleApprove}>
-                Approve
-              </button>
-              <button className="btn" onClick={handleReject}>
-                Reject
-              </button>
-              <button className="btn" onClick={handleAdminClose}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

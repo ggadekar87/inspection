@@ -23,7 +23,7 @@ export default function AppointmentList() {
   }, [dispatch, page, pageSize, debouncedSearch]);
 
   const columns = useMemo(() => {
-    return ['Truck Number', 'Driver Name', 'Appointment', 'Purpose', 'Port of Entry', 'Status', 'Action'];
+    return ['Truck Number', 'Driver Name', 'Appointment', 'Purpose', 'Port of Entry', 'Status', 'Comments', 'Action'];
   }, []);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: number, field: string) => {
     setSearchCols((s) => ({ ...s, [field]: e.target.value }))
@@ -65,11 +65,11 @@ export default function AppointmentList() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7}>Loading...</td>
+                <td colSpan={8}>Loading...</td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={7}>No appointments</td>
+                <td colSpan={8}>No appointments</td>
               </tr>
             ) : (
               items.map((a) => (
