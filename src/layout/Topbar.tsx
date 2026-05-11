@@ -11,7 +11,7 @@ export default function Topbar() {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <div>
-        <strong>Dashboard</strong>
+        <strong>Inspection</strong>
       </div>
       <div>
         {user ? (

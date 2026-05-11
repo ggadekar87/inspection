@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createAppointment } from '../appointmentsSlice';
 import type { AppDispatch } from '../../../app/store';
-
+import './AppointmentForm.css'
 export default function AppointmentForm({ onDone }: { onDone?: () => void }) {
   const dispatch = useDispatch<AppDispatch>();
   const [form, setForm] = useState({

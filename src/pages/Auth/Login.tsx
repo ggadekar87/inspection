@@ -1,7 +1,7 @@
-// src/pages/Auth/Login.tsx
 import React, { useState } from 'react';
 import { useAuth } from '../../features/auth/useAuth';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 export default function Login() {
   const { login } = useAuth();
@@ -22,24 +22,43 @@ export default function Login() {
   };
 
   return (
-    <div className="card" style={{ maxWidth: 420 }}>
-      <h3>Login</h3>
-      <form onSubmit={submit}>
-        <label>
-          Username
-          <input value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <label>
-          Password
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        {error && <div className="error-card">{error}</div>}
-        <div style={{ marginTop: 12 }}>
-          <button className="btn primary" type="submit">Login</button>
-        </div>
-      </form>
-      <div style={{ marginTop: 12 }}>
-        <small>Use username "alice" (Driver) or "bob" (Admin) with password "password".</small>
+    <div className="login-container">
+      <div className="login-card">
+        <h3 className="login-title">Login</h3>
+
+        <form onSubmit={submit} className="login-form">
+          <label className="login-label">
+            Username
+            <input
+              className="login-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="login-label">
+            Password
+            <input
+              type="password"
+              className="login-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+
+          {error && <div className="login-error">{error}</div>}
+
+          <button className="login-btn" type="submit">
+            Login
+          </button>
+        </form>
+
+        <p className="login-hint">
+          Use username <strong>alice</strong> (Driver) or <strong>bob</strong> (Admin)  
+          with password <strong>password</strong>.
+        </p>
       </div>
     </div>
   );
